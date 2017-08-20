@@ -11,6 +11,10 @@ events {
 http {
   include mime.types;
 
+    upstream database {
+        server 127.0.0.1:33060;
+    }
+
   server {
     listen 8080;
     lua_code_cache off;
