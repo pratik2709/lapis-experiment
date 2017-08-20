@@ -1,0 +1,6 @@
+<script src="static/app/gallery_app.js"></script>
+<script src="static/app/run.js"></script>
+<script src="static/app/routes.js"></script>
+<script src="static/app/GalleryFactory.js"></script>
+<script src="static/app/GalleryController.js"></script>
+<script src="static/app/NewController1.js"></script>

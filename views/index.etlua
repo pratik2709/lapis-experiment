@@ -1,0 +1,4 @@
+<p><a href="#!">Main</a></p>
+<a href="#!red">Red</a>
+<div ng-view></div>
+<% render("views.app_scripts") %>

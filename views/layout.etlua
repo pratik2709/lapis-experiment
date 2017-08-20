@@ -1,0 +1,14 @@
+<!-- views/layout.etlua -->
+<!DOCTYPE HTML>
+<html lang="en">
+<% render("views.scripts") %>
+<head>
+  <meta charset="UTF-8">
+  <title><%= page_title or "Masonry Layout with Masonry Plugin check" %></title>
+  <% render("views.styles") %>
+</head>
+<body ng-app="GalleryApp">
+  <h1>Greetings</h1>
+  <% content_for("inner") %>
+</body>
+</html>
