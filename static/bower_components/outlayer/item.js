@@ -61,8 +61,7 @@ var vendorProperties = {
   transform: transformProperty,
   transition: transitionProperty,
   transitionDuration: transitionProperty + 'Duration',
-  transitionProperty: transitionProperty + 'Property',
-  transitionDelay: transitionProperty + 'Delay'
+  transitionProperty: transitionProperty + 'Property'
 };
 
 // -------------------------- Item -------------------------- //
@@ -133,16 +132,13 @@ proto.getPosition = function() {
   var isOriginTop = this.layout._getOption('originTop');
   var xValue = style[ isOriginLeft ? 'left' : 'right' ];
   var yValue = style[ isOriginTop ? 'top' : 'bottom' ];
-  var x = parseFloat( xValue );
-  var y = parseFloat( yValue );
   // convert percent to pixels
   var layoutSize = this.layout.size;
-  if ( xValue.indexOf('%') != -1 ) {
-    x = ( x / 100 ) * layoutSize.width;
-  }
-  if ( yValue.indexOf('%') != -1 ) {
-    y = ( y / 100 ) * layoutSize.height;
-  }
+  var x = xValue.indexOf('%') != -1 ?
+    ( parseFloat( xValue ) / 100 ) * layoutSize.width : parseInt( xValue, 10 );
+  var y = yValue.indexOf('%') != -1 ?
+    ( parseFloat( yValue ) / 100 ) * layoutSize.height : parseInt( yValue, 10 );
+
   // clean up 'auto' or other non-integer values
   x = isNaN( x ) ? 0 : x;
   y = isNaN( y ) ? 0 : y;
@@ -205,7 +201,9 @@ proto._transitionTo = function( x, y ) {
   var curX = this.position.x;
   var curY = this.position.y;
 
-  var didNotMove = x == this.position.x && y == this.position.y;
+  var compareX = parseInt( x, 10 );
+  var compareY = parseInt( y, 10 );
+  var didNotMove = compareX === this.position.x && compareY === this.position.y;
 
   // save end position
   this.setPosition( x, y );
@@ -248,8 +246,8 @@ proto.goTo = function( x, y ) {
 proto.moveTo = proto._transitionTo;
 
 proto.setPosition = function( x, y ) {
-  this.position.x = parseFloat( x );
-  this.position.y = parseFloat( y );
+  this.position.x = parseInt( x, 10 );
+  this.position.y = parseInt( y, 10 );
 };
 
 // ----- transition ----- //
@@ -342,14 +340,10 @@ proto.enableTransition = function(/* style */) {
   //   prop = vendorProperties[ prop ] || prop;
   //   transitionValues.push( toDashedAll( prop ) );
   // }
-  // munge number to millisecond, to match stagger
-  var duration = this.layout.options.transitionDuration;
-  duration = typeof duration == 'number' ? duration + 'ms' : duration;
   // enable transition styles
   this.css({
     transitionProperty: transitionProps,
-    transitionDuration: duration,
-    transitionDelay: this.staggerDelay || 0
+    transitionDuration: this.layout.options.transitionDuration
   });
   // listen for transition end event
   this.element.addEventListener( transitionEndEvent, this, false );
@@ -423,20 +417,12 @@ proto._removeStyles = function( style ) {
 
 var cleanTransitionStyle = {
   transitionProperty: '',
-  transitionDuration: '',
-  transitionDelay: ''
+  transitionDuration: ''
 };
 
 proto.removeTransitionStyles = function() {
   // remove transition
   this.css( cleanTransitionStyle );
-};
-
-// ----- stagger ----- //
-
-proto.stagger = function( delay ) {
-  delay = isNaN( delay ) ? 0 : delay;
-  this.staggerDelay = delay + 'ms';
 };
 
 // ----- show/hide/remove ----- //

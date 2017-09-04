@@ -17,7 +17,7 @@ MyClass.prototype = Object.create( EvEmitter.prototype );
 _.extend( MyClass.prototype, EvEmitter.prototype );
 
 // single instance
-var emitter = new EvEmitter();
+var emitter = new EventEmitter();
 ```
 
 ### on
@@ -57,14 +57,6 @@ emitter.emitEvent( eventName, args )
 
 + `eventName` - _String_ - name of the event
 + `args` - _Array_ - arguments passed to listeners
-
-### allOff
-
-Removes all event listeners.
-
-``` js
-emitter.allOff()
-```
 
 ## Code example
 

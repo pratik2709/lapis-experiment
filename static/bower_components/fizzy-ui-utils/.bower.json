@@ -38,6 +38,6 @@
     "commit": "96fd89e0575e6af7b4634138139ee1a80d975b38"
   },
   "_source": "https://github.com/metafizzy/fizzy-ui-utils.git",
-  "_target": "^2.0.0",
+  "_target": "~2.0.0",
   "_originalSource": "fizzy-ui-utils"
 }

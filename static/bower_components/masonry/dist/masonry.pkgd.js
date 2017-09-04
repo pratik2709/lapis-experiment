@@ -1,5 +1,5 @@
 /*!
- * Masonry PACKAGED v4.2.0
+ * Masonry PACKAGED v4.0.0
  * Cascading grid layout library
  * http://masonry.desandro.com
  * MIT License
@@ -8,19 +8,20 @@
 
 /**
  * Bridget makes jQuery widgets
- * v2.0.1
+ * v2.0.0
  * MIT license
  */
 
 /* jshint browser: true, strict: true, undef: true, unused: true */
 
 ( function( window, factory ) {
-  // universal module definition
-  /*jshint strict: false */ /* globals define, module, require */
+  'use strict';
+  /* globals define: false, module: false, require: false */
+
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'jquery-bridget/jquery-bridget',[ 'jquery' ], function( jQuery ) {
-      return factory( window, jQuery );
+      factory( window, jQuery );
     });
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
@@ -151,7 +152,7 @@ return jQueryBridget;
 }));
 
 /**
- * EvEmitter v1.0.3
+ * EvEmitter v1.0.1
  * Lil' event emitter
  * MIT License
  */
@@ -160,7 +161,7 @@ return jQueryBridget;
 
 ( function( global, factory ) {
   // universal module definition
-  /* jshint strict: false */ /* globals define, module, window */
+  /* jshint strict: false */ /* globals define, module */
   if ( typeof define == 'function' && define.amd ) {
     // AMD - RequireJS
     define( 'ev-emitter/ev-emitter',factory );
@@ -172,7 +173,7 @@ return jQueryBridget;
     global.EvEmitter = factory();
   }
 
-}( typeof window != 'undefined' ? window : this, function() {
+}( this, function() {
 
 
 
@@ -205,8 +206,8 @@ proto.once = function( eventName, listener ) {
   // set once flag
   // set onceEvents hash
   var onceEvents = this._onceEvents = this._onceEvents || {};
-  // set onceListeners object
-  var onceListeners = onceEvents[ eventName ] = onceEvents[ eventName ] || {};
+  // set onceListeners array
+  var onceListeners = onceEvents[ eventName ] = onceEvents[ eventName ] || [];
   // set flag
   onceListeners[ listener ] = true;
 
@@ -471,7 +472,7 @@ return getSize;
 });
 
 /**
- * matchesSelector v2.0.2
+ * matchesSelector v2.0.1
  * matchesSelector( element, '.selector' )
  * MIT license
  */
@@ -484,7 +485,7 @@ return getSize;
   // universal module definition
   if ( typeof define == 'function' && define.amd ) {
     // AMD
-    define( 'desandro-matches-selector/matches-selector',factory );
+    define( 'matches-selector/matches-selector',factory );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory();
@@ -497,7 +498,7 @@ return getSize;
   'use strict';
 
   var matchesMethod = ( function() {
-    var ElemProto = window.Element.prototype;
+    var ElemProto = Element.prototype;
     // check for the standard method name first
     if ( ElemProto.matches ) {
       return 'matches';
@@ -525,20 +526,21 @@ return getSize;
 }));
 
 /**
- * Fizzy UI utils v2.0.4
+ * Fizzy UI utils v2.0.0
  * MIT license
  */
 
 /*jshint browser: true, undef: true, unused: true, strict: true */
 
 ( function( window, factory ) {
+  /*global define: false, module: false, require: false */
+  'use strict';
   // universal module definition
-  /*jshint strict: false */ /*globals define, module, require */
 
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'fizzy-ui-utils/utils',[
-      'desandro-matches-selector/matches-selector'
+      'matches-selector/matches-selector'
     ], function( matchesSelector ) {
       return factory( window, matchesSelector );
     });
@@ -586,8 +588,7 @@ utils.makeArray = function( obj ) {
   if ( Array.isArray( obj ) ) {
     // use object if already an array
     ary = obj;
-  } else if ( obj && typeof obj == 'object' &&
-    typeof obj.length == 'number' ) {
+  } else if ( obj && typeof obj.length == 'number' ) {
     // convert nodeList to array
     for ( var i=0; i < obj.length; i++ ) {
       ary.push( obj[i] );
@@ -697,10 +698,8 @@ utils.debounceMethod = function( _class, methodName, threshold ) {
 // ----- docReady ----- //
 
 utils.docReady = function( callback ) {
-  var readyState = document.readyState;
-  if ( readyState == 'complete' || readyState == 'interactive' ) {
-    // do async to allow for other scripts to run. metafizzy/flickity#441
-    setTimeout( callback );
+  if ( document.readyState == 'complete' ) {
+    callback();
   } else {
     document.addEventListener( 'DOMContentLoaded', callback );
   }
@@ -748,7 +747,7 @@ utils.htmlInit = function( WidgetClass, namespace ) {
       }
       // initialize
       var instance = new WidgetClass( elem, options );
-      // make available via $().data('namespace')
+      // make available via $().data('layoutname')
       if ( jQuery ) {
         jQuery.data( elem, namespace, instance );
       }
@@ -776,11 +775,14 @@ return utils;
         'ev-emitter/ev-emitter',
         'get-size/get-size'
       ],
-      factory
+      function( EvEmitter, getSize ) {
+        return factory( window, EvEmitter, getSize );
+      }
     );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS - Browserify, Webpack
     module.exports = factory(
+      window,
       require('ev-emitter'),
       require('get-size')
     );
@@ -788,12 +790,13 @@ return utils;
     // browser global
     window.Outlayer = {};
     window.Outlayer.Item = factory(
+      window,
       window.EvEmitter,
       window.getSize
     );
   }
 
-}( window, function factory( EvEmitter, getSize ) {
+}( window, function factory( window, EvEmitter, getSize ) {
 'use strict';
 
 // ----- helpers ----- //
@@ -821,14 +824,13 @@ var transitionEndEvent = {
   transition: 'transitionend'
 }[ transitionProperty ];
 
-// cache all vendor properties that could have vendor prefix
-var vendorProperties = {
-  transform: transformProperty,
-  transition: transitionProperty,
-  transitionDuration: transitionProperty + 'Duration',
-  transitionProperty: transitionProperty + 'Property',
-  transitionDelay: transitionProperty + 'Delay'
-};
+// cache all vendor properties
+var vendorProperties = [
+  transformProperty,
+  transitionProperty,
+  transitionProperty + 'Duration',
+  transitionProperty + 'Property'
+];
 
 // -------------------------- Item -------------------------- //
 
@@ -1042,7 +1044,7 @@ proto._nonTransition = function( args ) {
  *   @param {Boolean} isCleaning - removes transition styles after transition
  *   @param {Function} onTransitionEnd - callback
  */
-proto.transition = function( args ) {
+proto._transition = function( args ) {
   // redirect to nonTransition if no transition duration
   if ( !parseFloat( this.layout.options.transitionDuration ) ) {
     this._nonTransition( args );
@@ -1088,7 +1090,8 @@ function toDashedAll( str ) {
   });
 }
 
-var transitionProps = 'opacity,' + toDashedAll( transformProperty );
+var transitionProps = 'opacity,' +
+  toDashedAll( vendorProperties.transform || 'transform' );
 
 proto.enableTransition = function(/* style */) {
   // HACK changing transitionProperty during a transition
@@ -1106,18 +1109,16 @@ proto.enableTransition = function(/* style */) {
   //   prop = vendorProperties[ prop ] || prop;
   //   transitionValues.push( toDashedAll( prop ) );
   // }
-  // munge number to millisecond, to match stagger
-  var duration = this.layout.options.transitionDuration;
-  duration = typeof duration == 'number' ? duration + 'ms' : duration;
   // enable transition styles
   this.css({
     transitionProperty: transitionProps,
-    transitionDuration: duration,
-    transitionDelay: this.staggerDelay || 0
+    transitionDuration: this.layout.options.transitionDuration
   });
   // listen for transition end event
   this.element.addEventListener( transitionEndEvent, this, false );
 };
+
+proto.transition = Item.prototype[ transitionProperty ? '_transition' : '_nonTransition' ];
 
 // ----- events ----- //
 
@@ -1187,20 +1188,12 @@ proto._removeStyles = function( style ) {
 
 var cleanTransitionStyle = {
   transitionProperty: '',
-  transitionDuration: '',
-  transitionDelay: ''
+  transitionDuration: ''
 };
 
 proto.removeTransitionStyles = function() {
   // remove transition
   this.css( cleanTransitionStyle );
-};
-
-// ----- stagger ----- //
-
-proto.stagger = function( delay ) {
-  delay = isNaN( delay ) ? 0 : delay;
-  this.staggerDelay = delay + 'ms';
 };
 
 // ----- show/hide/remove ----- //
@@ -1318,7 +1311,7 @@ return Item;
 }));
 
 /*!
- * Outlayer v2.1.0
+ * Outlayer v2.0.0
  * the brains and guts of a layout library
  * MIT license
  */
@@ -1667,21 +1660,9 @@ proto._getItemLayoutPosition = function( /* item */ ) {
  * @param {Array} queue
  */
 proto._processLayoutQueue = function( queue ) {
-  this.updateStagger();
-  queue.forEach( function( obj, i ) {
-    this._positionItem( obj.item, obj.x, obj.y, obj.isInstant, i );
+  queue.forEach( function( obj ) {
+    this._positionItem( obj.item, obj.x, obj.y, obj.isInstant );
   }, this );
-};
-
-// set stagger from option in milliseconds number
-proto.updateStagger = function() {
-  var stagger = this.options.stagger;
-  if ( stagger === null || stagger === undefined ) {
-    this.stagger = 0;
-    return;
-  }
-  this.stagger = getMilliseconds( stagger );
-  return this.stagger;
 };
 
 /**
@@ -1691,12 +1672,11 @@ proto.updateStagger = function() {
  * @param {Number} y - vertical position
  * @param {Boolean} isInstant - disables transitions
  */
-proto._positionItem = function( item, x, y, isInstant, i ) {
+proto._positionItem = function( item, x, y, isInstant ) {
   if ( isInstant ) {
     // if not transition, just set CSS
     item.goTo( x, y );
   } else {
-    item.stagger( i * this.stagger );
     item.moveTo( x, y );
   }
 };
@@ -2040,9 +2020,7 @@ proto.reveal = function( items ) {
   if ( !items || !items.length ) {
     return;
   }
-  var stagger = this.updateStagger();
-  items.forEach( function( item, i ) {
-    item.stagger( i * stagger );
+  items.forEach( function( item ) {
     item.reveal();
   });
 };
@@ -2056,9 +2034,7 @@ proto.hide = function( items ) {
   if ( !items || !items.length ) {
     return;
   }
-  var stagger = this.updateStagger();
-  items.forEach( function( item, i ) {
-    item.stagger( i * stagger );
+  items.forEach( function( item ) {
     item.hide();
   });
 };
@@ -2223,31 +2199,6 @@ function subclass( Parent ) {
   return SubClass;
 }
 
-// ----- helpers ----- //
-
-// how many milliseconds are in each unit
-var msUnits = {
-  ms: 1,
-  s: 1000
-};
-
-// munge time-like parameter into millisecond number
-// '0.4s' -> 40
-function getMilliseconds( time ) {
-  if ( typeof time == 'number' ) {
-    return time;
-  }
-  var matches = time.match( /(^\d*\.?\d*)(\w*)/ );
-  var num = matches && matches[1];
-  var unit = matches && matches[2];
-  if ( !num.length ) {
-    return 0;
-  }
-  num = parseFloat( num );
-  var mult = msUnits[ unit ] || 1;
-  return num * mult;
-}
-
 // ----- fin ----- //
 
 // back in global
@@ -2258,7 +2209,7 @@ return Outlayer;
 }));
 
 /*!
- * Masonry v4.2.0
+ * Masonry v4.0.0
  * Cascading grid layout library
  * http://masonry.desandro.com
  * MIT License
@@ -2300,9 +2251,7 @@ return Outlayer;
   // isFitWidth -> fitWidth
   Masonry.compatOptions.fitWidth = 'isFitWidth';
 
-  var proto = Masonry.prototype;
-
-  proto._resetLayout = function() {
+  Masonry.prototype._resetLayout = function() {
     this.getSize();
     this._getMeasurement( 'columnWidth', 'outerWidth' );
     this._getMeasurement( 'gutter', 'outerWidth' );
@@ -2315,10 +2264,9 @@ return Outlayer;
     }
 
     this.maxY = 0;
-    this.horizontalColIndex = 0;
   };
 
-  proto.measureColumns = function() {
+  Masonry.prototype.measureColumns = function() {
     this.getContainerWidth();
     // if columnWidth is 0, default to outerWidth of first item
     if ( !this.columnWidth ) {
@@ -2343,7 +2291,7 @@ return Outlayer;
     this.cols = Math.max( cols, 1 );
   };
 
-  proto.getContainerWidth = function() {
+  Masonry.prototype.getContainerWidth = function() {
     // container is parent if fit width
     var isFitWidth = this._getOption('fitWidth');
     var container = isFitWidth ? this.element.parentNode : this.element;
@@ -2353,7 +2301,7 @@ return Outlayer;
     this.containerWidth = size && size.innerWidth;
   };
 
-  proto._getItemLayoutPosition = function( item ) {
+  Masonry.prototype._getItemLayoutPosition = function( item ) {
     item.getSize();
     // how many columns does this brick span
     var remainder = item.size.outerWidth % this.columnWidth;
@@ -2361,41 +2309,33 @@ return Outlayer;
     // round if off by 1 pixel, otherwise use ceil
     var colSpan = Math[ mathMethod ]( item.size.outerWidth / this.columnWidth );
     colSpan = Math.min( colSpan, this.cols );
-    // use horizontal or top column position
-    var colPosMethod = this.options.horizontalOrder ?
-      '_getHorizontalColPosition' : '_getTopColPosition';
-    var colPosition = this[ colPosMethod ]( colSpan, item );
+
+    var colGroup = this._getColGroup( colSpan );
+    // get the minimum Y value from the columns
+    var minimumY = Math.min.apply( Math, colGroup );
+    var shortColIndex = colGroup.indexOf( minimumY );
+
     // position the brick
     var position = {
-      x: this.columnWidth * colPosition.col,
-      y: colPosition.y
+      x: this.columnWidth * shortColIndex,
+      y: minimumY
     };
+
     // apply setHeight to necessary columns
-    var setHeight = colPosition.y + item.size.outerHeight;
-    var setMax = colSpan + colPosition.col;
-    for ( var i = colPosition.col; i < setMax; i++ ) {
-      this.colYs[i] = setHeight;
+    var setHeight = minimumY + item.size.outerHeight;
+    var setSpan = this.cols + 1 - colGroup.length;
+    for ( var i = 0; i < setSpan; i++ ) {
+      this.colYs[ shortColIndex + i ] = setHeight;
     }
 
     return position;
-  };
-
-  proto._getTopColPosition = function( colSpan ) {
-    var colGroup = this._getTopColGroup( colSpan );
-    // get the minimum Y value from the columns
-    var minimumY = Math.min.apply( Math, colGroup );
-
-    return {
-      col: colGroup.indexOf( minimumY ),
-      y: minimumY,
-    };
   };
 
   /**
    * @param {Number} colSpan - number of columns the element spans
    * @returns {Array} colGroup
    */
-  proto._getTopColGroup = function( colSpan ) {
+  Masonry.prototype._getColGroup = function( colSpan ) {
     if ( colSpan < 2 ) {
       // if brick spans only one column, use all the column Ys
       return this.colYs;
@@ -2406,38 +2346,15 @@ return Outlayer;
     var groupCount = this.cols + 1 - colSpan;
     // for each group potential horizontal position
     for ( var i = 0; i < groupCount; i++ ) {
-      colGroup[i] = this._getColGroupY( i, colSpan );
+      // make an array of colY values for that one group
+      var groupColYs = this.colYs.slice( i, i + colSpan );
+      // and get the max value of the array
+      colGroup[i] = Math.max.apply( Math, groupColYs );
     }
     return colGroup;
   };
 
-  proto._getColGroupY = function( col, colSpan ) {
-    if ( colSpan < 2 ) {
-      return this.colYs[ col ];
-    }
-    // make an array of colY values for that one group
-    var groupColYs = this.colYs.slice( col, col + colSpan );
-    // and get the max value of the array
-    return Math.max.apply( Math, groupColYs );
-  };
-
-  // get column position based on horizontal index. #873
-  proto._getHorizontalColPosition = function( colSpan, item ) {
-    var col = this.horizontalColIndex % this.cols;
-    var isOver = colSpan > 1 && col + colSpan > this.cols;
-    // shift to next row if item can't fit on current row
-    col = isOver ? 0 : col;
-    // don't let zero-size items take up space
-    var hasSize = item.size.outerWidth && item.size.outerHeight;
-    this.horizontalColIndex = hasSize ? col + colSpan : this.horizontalColIndex;
-
-    return {
-      col: col,
-      y: this._getColGroupY( col, colSpan ),
-    };
-  };
-
-  proto._manageStamp = function( stamp ) {
+  Masonry.prototype._manageStamp = function( stamp ) {
     var stampSize = getSize( stamp );
     var offset = this._getElementOffset( stamp );
     // get the columns that this stamp affects
@@ -2460,7 +2377,7 @@ return Outlayer;
     }
   };
 
-  proto._getContainerSize = function() {
+  Masonry.prototype._getContainerSize = function() {
     this.maxY = Math.max.apply( Math, this.colYs );
     var size = {
       height: this.maxY
@@ -2473,7 +2390,7 @@ return Outlayer;
     return size;
   };
 
-  proto._getContainerFitWidth = function() {
+  Masonry.prototype._getContainerFitWidth = function() {
     var unusedCols = 0;
     // count unused columns
     var i = this.cols;
@@ -2487,7 +2404,7 @@ return Outlayer;
     return ( this.cols - unusedCols ) * this.columnWidth - this.gutter;
   };
 
-  proto.needsResizeLayout = function() {
+  Masonry.prototype.needsResizeLayout = function() {
     var previousWidth = this.containerWidth;
     this.getContainerWidth();
     return previousWidth != this.containerWidth;
