@@ -1,6 +1,4 @@
-<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
-
-
+<script src="static/bower_components/jquery/dist/jquery.js"></script>
 <script src="static/bower_components/ev-emitter/ev-emitter.js"></script>
 <script src="static/bower_components/desandro-matches-selector/matches-selector.js"></script>
 <script src="static/bower_components/fizzy-ui-utils/utils.js"></script>
@@ -8,8 +6,8 @@
 <script src="static/bower_components/outlayer/item.js"></script>
 <script src="static/bower_components/outlayer/outlayer.js"></script>
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/masonry/3.1.2/masonry.pkgd.min.js"></script>
-<script src="//desandro.github.io/imagesloaded/imagesloaded.pkgd.min.js"></script>
+<script src="static/bower_components/masonry/dist/masonry.pkgd.js"></script>
+<script src="static/bower_components/imagesloaded/imagesloaded.js"></script>
 <script src="static/bower_components/angular/angular.js"></script>
 <script src="static/bower_components/angular-route/angular-route.js"></script>
 <script src="static/bower_components/angular-resource/angular-resource.js"></script>
