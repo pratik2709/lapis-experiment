@@ -1,5 +1,8 @@
-<div masonry load-images="true" masonry-options="{ gutter: 5, columnWidth: 300 , horizontalOrder: true}">
-    <div class="masonry-brick" ng-repeat="brick in images">
-        <img class="tile" ng-src="https://s3.ap-south-1.amazonaws.com/pallavi-images/thumbnails/{{ brick.url }}" alt="A masonry brick">
+<div style="margin: 0 auto !important;">
+    <div masonry class="central" load-images="true" masonry-options="{ gutter: 5, columnWidth: 300 , horizontalOrder: true, isFitWidth: true}">
+        <div class="masonry-brick" ng-repeat="brick in images">
+            <img class="tile" ng-src="https://s3.ap-south-1.amazonaws.com/pallavi-images/thumbnails/{{ brick.url }}"
+                 alt="A masonry brick">
+        </div>
     </div>
 </div>
