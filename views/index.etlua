@@ -1,4 +1,17 @@
-<p><a href="#!">Main</a></p>
-<a href="#!red">Red</a>
+<header class="header">
+  <div class="header__logo">Steve Jobs</div>
+  <div class="header__nav">
+    <a href="#!">Home</a>
+    <a href="#!aboutme">About</a>
+  </div>
+  <div class="header__links">
+    <a href="#"><i class="fa fa-twitter"></i></a>
+    <a href="#"><i class="fa fa-facebook"></i></a>
+    <a href="#"><i class="fa fa-instagram"></i></a>
+    <a href="#"><i class="fa fa-linkedin"></i></a>
+  </div>
+</header>
+
 <div ng-view></div>
+
 <% render("views.app_scripts") %>

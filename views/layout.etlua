@@ -5,6 +5,9 @@
 <head>
   <meta charset="UTF-8">
   <title><%= page_title or "Lens by Pratik" %></title>
+  <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,700" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+
   <% render("views.styles") %>
 </head>
 <body ng-app="GalleryApp">
