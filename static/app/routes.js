@@ -5,9 +5,14 @@ galleryapp.config(["$routeProvider", function ($routeProvider) {
             controller: "GalleryController",
             templateUrl: "static/app/gallery.html"
         })
-        .when("/red", {
+        .when("/aboutme", {
             name: 'New',
             controller: "NewController1",
             templateUrl: "static/app/new.html"
+        })
+        .when("/admin", {
+            name: 'Admin',
+            controller: "AdminController",
+            templateUrl: "static/app/admin/admin.html"
         })
 }]);
